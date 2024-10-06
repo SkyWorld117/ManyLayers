@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Rectangle
+import random
 
 plt.rcParams['text.usetex'] = True
 
@@ -104,9 +105,12 @@ class Matrix:
 
     def draw(self, zorder=0, shift_x=0, shift_y=0): 
         self.drawBoard.ax.add_patch(Rectangle((self.coord_x-self.drawBoard.lw+shift_x, self.coord_y-self.drawBoard.lw+shift_y), self.width+2*self.drawBoard.lw, self.height+2*self.drawBoard.lw, edgecolor='none', facecolor=self.bg_color, zorder=zorder))
+        choices = [x for x in range(self.rows*self.cols)]
+        if not self.dense:
+            choices = random.sample(choices, k=int(0.5*len(choices)))
         for i in range(self.rows):
             for j in range(self.cols):
-                if not self.dense and (i+j)%2 == 1:
+                if not self.dense and not i*self.cols+j in choices:
                     continue
                 center_x = self.coord_x + (1+j)*self.drawBoard.padding + (j*2+1)*self.drawBoard.circle_radius + self.drawBoard.lw
                 center_y = self.coord_y + (1+i)*self.drawBoard.padding + (i*2+1)*self.drawBoard.circle_radius + self.drawBoard.lw
